@@ -1,9 +1,5 @@
-import { winnerPost, racingBlock } from "./pageElements.js";
-import {
-  startEngineAll,
-  driveEngine,
-  removeStoppedCarfromWinners,
-} from "./api.js";
+import { winnerPost, racingBlock } from './pageElements.js';
+import { startEngineAll, driveEngine, addWinner } from './api.js';
 
 const moveCar = async (id, velocity) => {
   const track = document.getElementById(`track-${id}`);
@@ -12,12 +8,12 @@ const moveCar = async (id, velocity) => {
     .getElementById(`${id}-color`)
     .animate(
       [
-        { transform: "translate(0)" },
-        { transform: `translate(${finishPoint.width - 100}px)` },
+        { transform: 'translate(0)' },
+        { transform: `translate(${finishPoint.width - 100}px)` }
       ],
       {
         duration: Math.ceil(500000 / velocity),
-        fill: "forwards",
+        fill: 'forwards'
       }
     );
   document.getElementById(`stop-${id}`).disabled = false;
@@ -41,10 +37,10 @@ const pauseCar = async (id) => {
 };
 
 const getWinner = async () => {
-  let cars = document.querySelectorAll(".racing-car-block");
+  let cars = document.querySelectorAll('.racing-car-block');
   const winner = {
     maxVelocity: 1,
-    id: "",
+    id: ''
   };
   const carsID = [];
   for (const car of cars) {
@@ -64,18 +60,18 @@ const getWinner = async () => {
 
   await Promise.any(promises);
 
-  const carsName = document.querySelectorAll(".car-model");
+  const carsName = document.querySelectorAll('.car-model');
   for (let carName of carsName) {
-    if (carName.id.replace("-name", "") === winner.id) {
+    if (carName.id.replace('-name', '') === winner.id) {
       winner.name = carName.innerHTML;
     }
   }
 
-  winnerPost.classList.remove(".no-winner");
+  winnerPost.classList.remove('.no-winner');
   winnerPost.innerHTML = `The Winner is ${winner.name} with time of ${winner.time} sec`;
   racingBlock.prepend(winnerPost);
   setTimeout(() => winnerPost.remove(), 5000);
-  removeStoppedCarfromWinners(winner.id, winner.time);
+  addWinner(winner.id, winner.time);
   return winner;
 };
 
